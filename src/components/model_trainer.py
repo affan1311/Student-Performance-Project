@@ -38,8 +38,59 @@ class ModelTrainer:
                 'CatBoosting Regression': CatBoostRegressor(verbose=False),
                 'AdaBoost Regression': AdaBoostRegressor() 
             }
+            
+            params={
+                'Decision Tree Regression': {
+                    'criterion':['squared_error','friedman_mse','absolute_error','poisson'],
+                    # 'splitter':['best','random'],
+                    # 'max_features':['sqrt','log2'],
+                },
+
+                'Random Forest Regression': {
+                    'n_estimators': [100, 200],
+                    # 'max_features': ['sqrt', 'log2'],
+                    'criterion': ['squared_error', 'absolute_error']
+                },
+
+                'K-Neighbors Regression': {
+                    'n_neighbors': [3, 5, 7, 9],
+                    'weights': ['uniform', 'distance'],
+                    'metric': ['euclidean', 'manhattan']
+                },
+
+                'Linear Regression': {},
+
+                'Ridge Regression': {
+                    'alpha': [0.1, 1.0, 10.0, 100.0],
+                    'solver': ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
+                },
+
+                'Lasso Regression': {
+                    'alpha': [0.1, 1.0, 10.0, 100.0],
+                    'selection': ['cyclic', 'random']
+                },
+
+                'XGB Regression': {
+                    'learning_rate': [0.01, 0.1, 0.2],
+                    'n_estimators': [100, 200, 300],
+                    'max_depth': [3, 5, 7]
+                },
+
+                'CatBoosting Regression': {
+                    'depth': [4, 6, 8],
+                    'learning_rate': [0.01, 0.1, 0.2],
+                    'iterations': [100, 200, 300]
+                },
+
+                'AdaBoost Regression': {
+                    'n_estimators': [50, 100, 200],
+                    'learning_rate': [0.01, 0.1, 1.0]
+                }   
+
+            }
+
             model_report:dict=evaluate_models(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
-                                             models=models)
+                                             models=models,param=params)
             
             ## To get best model score from dict
             best_model_score = max(sorted(model_report.values()))
@@ -63,7 +114,7 @@ class ModelTrainer:
             predicted=best_model.predict(X_test)
 
             r2_square = r2_score(y_test, predicted)
-            return r2_square
+            return best_model_name, r2_square
             
 
 
